@@ -92,7 +92,7 @@ func (a *Application) Produce(subject string, obj interface{}) {
 // Handler simply adds a new handler to the handlers map
 func (a *Application) Handler(subject string, handler EventHandler) *HandlerWrapper {
 	// Create and return the handler wrapper
-	w := &HandlerWrapper{Handler: handler}
+	w := NewHandler(handler)
 	a.Handlers[subject] = w
 	return w
 }
@@ -119,7 +119,7 @@ func (a *Application) Run() {
 		handler.subscription = sub
 
 		// Listen for messages
-		handler.Listen(&Context{App: a})
+		go handler.Listen(&Context{App: a})
 	}
 
 	// Log a message to inform that this is now running

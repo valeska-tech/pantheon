@@ -14,13 +14,22 @@ type (
 		Handler      EventHandler
 		Schema       *avro.Codec
 		subscription *nats.Subscription
-		ch           chan (*nats.Msg)
-		unsubscribe  chan (bool)
+		ch           chan *nats.Msg
+		unsubscribe  chan bool
 	}
 
 	// EventHandler defines the contract for an event handler
 	EventHandler func(ctx *Context)
 )
+
+// NewHandler returns a new HandlerWrapper struct
+func NewHandler(e EventHandler) *HandlerWrapper {
+	return &HandlerWrapper{
+		Handler:     e,
+		ch:          make(chan *nats.Msg),
+		unsubscribe: make(chan bool),
+	}
+}
 
 // Listen allows the handler to listen to the intake and unsubscribe channels
 func (w *HandlerWrapper) Listen(ctx *Context) {
