@@ -40,6 +40,7 @@ handlerloop:
 			// forward it onto the handler
 			ctx := ctx.Copy()
 			ctx.Data = string(msg.Data)
+			ctx.wrapper = w
 
 			w.forward(ctx)
 		case <-w.unsubscribe:

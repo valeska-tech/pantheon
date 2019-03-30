@@ -1,10 +1,13 @@
 package pantheon
 
 import (
+	"encoding/json"
 	"errors"
 	"io/ioutil"
+	"strings"
 
 	avro "github.com/linkedin/goavro"
+	"github.com/mitchellh/mapstructure"
 )
 
 // Context is used to separate nats from the handlers,
@@ -14,12 +17,38 @@ type Context struct {
 	App     *Application
 	Data    string
 	Decoded interface{}
+	wrapper *HandlerWrapper
 }
 
 // Copy returns a copy of this context
 func (ctx *Context) Copy() *Context {
 	return &Context{
 		App: ctx.App,
+	}
+}
+
+// Unsubscribe sends a message to the unsubscribe channel of the handler
+// attached to the current context
+func (ctx *Context) Unsubscribe() {
+	ctx.wrapper.unsubscribe <- true
+}
+
+// MustBind ensures that the data from an event binds to the
+// given interface
+func (ctx *Context) MustBind(in interface{}) {
+	// Does it have a decoded version?
+	if ctx.Decoded != nil {
+		// Use mapstructure to decode this biz.
+		if err := mapstructure.Decode(ctx.Decoded, in); err != nil {
+			panic(err)
+		}
+
+		return
+	}
+
+	// Otherwise, lets deocde this as json
+	if err := json.NewDecoder(strings.NewReader(ctx.Data)).Decode(in); err != nil {
+		panic(err)
 	}
 }
 

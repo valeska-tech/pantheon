@@ -3,10 +3,8 @@ package pantheon
 import (
 	"encoding/json"
 	"os"
-	"strings"
 	"sync"
 
-	"github.com/mitchellh/mapstructure"
 	nats "github.com/nats-io/go-nats"
 	"github.com/sirupsen/logrus"
 )
@@ -56,25 +54,6 @@ func createLog() *logrus.Logger {
 	log.Out = os.Stdout
 
 	return log
-}
-
-// MustBind ensures that the data from an event binds to the
-// given interface
-func (ctx *Context) MustBind(in interface{}) {
-	// Does it have a decoded version?
-	if ctx.Decoded != nil {
-		// Use mapstructure to decode this biz.
-		if err := mapstructure.Decode(ctx.Decoded, in); err != nil {
-			panic(err)
-		}
-
-		return
-	}
-
-	// Otherwise, lets deocde this as json
-	if err := json.NewDecoder(strings.NewReader(ctx.Data)).Decode(in); err != nil {
-		panic(err)
-	}
 }
 
 // Produce puts the given message onto the specified topicz
