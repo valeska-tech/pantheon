@@ -3,10 +3,8 @@ package pantheon
 import (
 	"encoding/json"
 	"errors"
-	"io/ioutil"
 	"strings"
 
-	avro "github.com/linkedin/goavro"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -72,23 +70,4 @@ func (ctx *Context) Get(key string) (interface{}, error) {
 	}
 
 	return in, nil
-}
-
-// WithAvro accepts a schema file containing an avro schema
-// this method will panic if the file does not exist or if the
-// file does not contain valid avro
-func (w *HandlerWrapper) WithAvro(schema string) {
-	data, err := ioutil.ReadFile(SchemaDir + "/" + schema)
-
-	if err != nil {
-		panic(err)
-	}
-
-	codec, err := avro.NewCodec(string(data))
-
-	if err != nil {
-		panic(err)
-	}
-
-	w.Schema = codec
 }

@@ -23,6 +23,7 @@ type (
 		Handlers map[string]*HandlerWrapper
 		params   map[string]interface{}
 		nats     *nats.Conn
+		wg       sync.WaitGroup
 	}
 )
 
@@ -40,6 +41,7 @@ func NewApp() *Application {
 		Handlers: make(map[string]*HandlerWrapper),
 		nats:     nc,
 		params:   make(map[string]interface{}),
+		wg:       sync.WaitGroup{},
 	}
 
 	// Set the schema and template directories from envs
@@ -81,8 +83,7 @@ func (a *Application) With(key string, param interface{}) {
 	a.params[key] = param
 }
 
-// Run starts the application daemon, this also starts any consumer
-func (a *Application) Run() {
+func (a *Application) RegisterHandlers() {
 	// Start the handlers
 	for subject, handler := range a.Handlers {
 		a.Log.Infof("Processing handler for %s subject", subject)
@@ -100,11 +101,15 @@ func (a *Application) Run() {
 		// Listen for messages
 		go handler.Listen(&Context{App: a})
 	}
+}
+
+// Run starts the application daemon, this also starts any consumer
+func (a *Application) Run() {
+	a.RegisterHandlers()
 
 	// Log a message to inform that this is now running
 	a.Log.Info("Running Application...")
 
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	wg.Wait()
+	a.wg.Add(1)
+	a.wg.Wait()
 }
