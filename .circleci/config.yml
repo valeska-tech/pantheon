@@ -1,16 +1,18 @@
 version: 2
 jobs:
-  build:
+  test:
     docker:
-      - image: circleci/golang:latest
+      - image: circleci/golang
+        environment:
+          GO111MODULE: "ON"
     working_directory: /go/src/github.com/valeska-tech/pantheon
     steps:
       - checkout
       - run: 
-          name: Tests
+          name: test
           command: go test ./... -v -cover -p=1
 workflows:
   version: 2
   validate:
     jobs:
-      - build
+      - test
