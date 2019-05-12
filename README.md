@@ -1,5 +1,7 @@
 # Pantheon
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/valeska-tech/pantheon)](https://goreportcard.com/report/github.com/valeska-tech/pantheon) [![CircleCI](https://circleci.com/gh/valeska-tech/pantheon.svg?style=svg)](https://circleci.com/gh/valeska-tech/pantheon)
+
 A wrapper framework around Nats for Go. Allows the use of abstracted handlers and context and adds avro schema validation.
 
 ## Usage
