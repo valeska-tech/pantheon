@@ -16,7 +16,10 @@ type (
 
 func createContext() *pantheon.Context {
 	return &pantheon.Context{
-		App: pantheon.NewApp(),
+		App: &pantheon.Application{
+			Handlers: make(map[string]*pantheon.HandlerWrapper),
+			Params:   make(map[string]interface{}),
+		},
 	}
 }
 

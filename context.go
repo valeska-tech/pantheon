@@ -63,7 +63,7 @@ func (ctx *Context) MustGet(key string) interface{} {
 
 // Get fetches a parameter from the application through the context struct
 func (ctx *Context) Get(key string) (interface{}, error) {
-	in, ok := ctx.App.params[key]
+	in, ok := ctx.App.Params[key]
 
 	if !ok {
 		return nil, errors.New("Unable for find parameter " + key)

@@ -21,7 +21,7 @@ type (
 	Application struct {
 		Log      *logrus.Logger
 		Handlers map[string]*HandlerWrapper
-		params   map[string]interface{}
+		Params   map[string]interface{}
 		nats     *nats.Conn
 		wg       sync.WaitGroup
 	}
@@ -40,7 +40,7 @@ func NewApp() *Application {
 		Log:      createLog(),
 		Handlers: make(map[string]*HandlerWrapper),
 		nats:     nc,
-		params:   make(map[string]interface{}),
+		Params:   make(map[string]interface{}),
 		wg:       sync.WaitGroup{},
 	}
 
@@ -80,9 +80,10 @@ func (a *Application) Handler(subject string, handler EventHandler) *HandlerWrap
 
 // With adds a dependency into the params map
 func (a *Application) With(key string, param interface{}) {
-	a.params[key] = param
+	a.Params[key] = param
 }
 
+// RegisterHandlers loops through the handlers that have been defined and starts consuming
 func (a *Application) RegisterHandlers() {
 	// Start the handlers
 	for subject, handler := range a.Handlers {
