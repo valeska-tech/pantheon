@@ -10,7 +10,7 @@ import (
 type (
 	// HandlerWrapper is used to contain an event handler and any
 	// options or settings associated with them, you can bind schemas
-	// to the wrapper which are evaluated when a message is recieved
+	// to the wrapper which are evaluated when a message is received
 	// before they are sent to the handler.
 	HandlerWrapper struct {
 		Handler      EventHandler
